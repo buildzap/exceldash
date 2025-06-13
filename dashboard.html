@@ -25,8 +25,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    
-    <!-- Custom CSS -->
+      <!-- Custom CSS -->
+    <link href="css/styles.css" rel="stylesheet">
     <style>
         :root {
             --primary-dark: #1a1d20;
@@ -82,11 +82,11 @@
             background-color: var(--secondary-dark);
             border-color: var(--accent-blue);
             color: var(--text-primary);
-            box-shadow: 0 0 0 0.25rem rgba(13,110,253,.25);
+            box-shadow: 0 0 0 0.25rem rgba(37, 38, 39, 0.25);
         }
 
         .btn-primary {
-            background: linear-gradient(45deg, var(--accent-blue), #0a58ca);
+            background: linear-gradient(45deg, var(--accent-blue), #060606);
             border: none;
             padding: 0.5rem 1.5rem;
             transition: all 0.3s ease;
@@ -134,44 +134,35 @@
             margin-bottom: 1rem;
         }
 
-        /* Header Navigation Styles */
+        /* Navigation Styles */
         .navbar {
-            background-color: var(--secondary-dark);
-            border-bottom: 1px solid var(--border-color);
-            padding: 1rem 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            background-color: var(--secondary-dark) !important;
         }
 
-        .navbar-brand {
-            color: var(--text-primary) !important;
-            font-size: 1.4rem;
-            font-weight: 600;
-            letter-spacing: -0.5px;
-        }
-
-        .navbar-brand i {
-            color: var(--accent-blue);
-            margin-right: 0.5rem;
-        }
-
-        .navbar-nav .nav-link {
+        .nav-link {
             color: var(--text-secondary) !important;
             font-weight: 500;
-            font-size: 1rem;
-            padding: 0.5rem 1rem;
+            padding: 0.5rem 1rem !important;
             margin: 0 0.2rem;
             border-radius: 6px;
             transition: all 0.3s ease;
         }
 
-        .navbar-nav .nav-link:hover {
+        .nav-link:hover {
             color: var(--text-primary) !important;
             background-color: rgba(255,255,255,0.1);
         }
 
-        .navbar-nav .nav-link.active {
+        .nav-link.active {
             color: var(--text-primary) !important;
-            background-color: var(--accent-blue);
+            background: linear-gradient(45deg, var(--accent-blue), #0c0c0c);
+            box-shadow: 0 2px 8px rgba(13,110,253,0.3);
+        }
+
+        .navbar-brand {
+            font-weight: 600;
+            font-size: 1.3rem;
         }
 
         /* Footer Styles */
@@ -350,23 +341,37 @@
 
         .btn-export-dashboard i {
             margin-right: 10px;
-        }
-
-        /* AdSense Styles */
-        .adsense-container {
-            background: rgba(44, 48, 52, 0.7);
+        }        /* Advertisement Styles */
+        .ad-space {
+            background: linear-gradient(to right, rgba(44, 48, 52, 0.8), rgba(44, 48, 52, 0.6));
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 15px;
-            margin: 2rem 0;
+            border-radius: 6px;
+            padding: 10px;
+            margin: 1.5rem 0;
+            text-align: center;
+            position: relative;
         }
 
-        .adsense-horizontal {
+        .ad-space::before {
+            content: 'Advertisement Space';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--secondary-dark);
+            padding: 0 8px;
+            font-size: 0.75rem;
+            color: #6c757d;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .ad-space-horizontal {
             width: 100%;
-            min-height: 90px;
+            height: 100px;
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
         }
     </style>
 
@@ -377,13 +382,13 @@
     </script>
 </head>
 <body class="bg-dark text-light d-flex flex-column min-vh-100">
-    <!-- Header Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
         <div class="container">
             <a class="navbar-brand" href="index.html">
-                <i class="fas fa-chart-bar"></i>Excel Dashboard
+                <i class="fas fa-chart-bar me-2"></i>Excel Dashboard
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -392,10 +397,22 @@
                         <a class="nav-link" href="index.html">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="dashboard.html">Dashboard</a>
+                        <a class="nav-link" href="upload.html">Upload</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="upload.html">Upload</a>
+                        <a class="nav-link" href="dashboard.html">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="privacy-policy.html">Privacy-Policy</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="terms-of-service.html">Terms of Service</a>
                     </li>
                 </ul>
             </div>
@@ -608,41 +625,18 @@
                 </div>
             </div>
         </div>
-    </main>
-
-    <!-- Bottom AdSense Banner -->
+    </main>    <!-- Bottom Advertisement Space -->
     <div class="container-fluid">
-        <div class="adsense-container adsense-horizontal">
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-YOUR_PUBLISHER_ID"
-                 data-ad-slot="DASHBOARD_BOTTOM_SLOT"
-                 data-ad-format="horizontal"
-                 data-full-width-responsive="true"></ins>
-            <script>
-                 (adsbygoogle = window.adsbygoogle || []).push({});
-            </script>
+        <div class="ad-space ad-space-horizontal">
+            <!-- Ad Content Here -->
         </div>
     </div>
 
     <!-- Footer -->
-    <footer class="mt-auto">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-4">
-                    <span class="footer-brand">Excel Dashboard</span>
-                </div>
-                <div class="col-md-4 text-center">
-                    <nav class="nav justify-content-center">
-                        <a class="nav-link" href="index.html">Home</a>
-                        <a class="nav-link" href="dashboard.html">Dashboard</a>
-                        <a class="nav-link" href="upload.html">Upload</a>
-                    </nav>
-                </div>
-                <div class="col-md-4 text-end">
-                    <p class="footer-copyright mb-0">&copy; 2025 Excel Dashboard. All rights reserved.</p>
-                </div>
-            </div>
+     <!-- Footer -->
+    <footer class="py-3 mt-auto bg-dark border-top border-secondary">
+        <div class="container text-center">
+            <small class="text-muted">&copy; 2025 SoftLabsMind. All rights reserved.</small>
         </div>
     </footer>
 
@@ -851,10 +845,25 @@
                 }
             }
         }
-    </script>
-
-    <!-- Required Scripts -->
+    </script>    <!-- Required Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <!-- Add active state to current page -->    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle file:/// protocol and normal paths
+            let currentPage = window.location.href;
+            currentPage = decodeURIComponent(currentPage);
+            currentPage = currentPage.split('\\').pop().split('/').pop() || 'dashboard.html';
+            
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === currentPage) {
+                    link.classList.add('active');
+                    link.setAttribute('aria-current', 'page');
+                }
+            });
+        });
+    </script>
 </body>
 </html>

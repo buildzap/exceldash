@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Get DOM elements
     const dropZone = document.getElementById('dropZone');
     const fileInput = document.getElementById('fileInput');
     const previewSection = document.getElementById('previewSection');
@@ -40,18 +39,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Handle file drop
-    dropZone.addEventListener('drop', function(e) {
+    dropZone.addEventListener('drop', handleDrop, false);
+
+    function handleDrop(e) {
         const dt = e.dataTransfer;
         const files = dt.files;
         handleFiles(files);
-    });
+    }
 
     // Handle file input change
     fileInput.addEventListener('change', function(e) {
         handleFiles(this.files);
-    });
-
-    function handleFiles(files) {
+    });    function handleFiles(files) {
         if (files.length === 0) return;
 
         const file = files[0];
@@ -60,53 +59,65 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Reset UI state
+        // Reset any previous state
         previewSection.classList.add('d-none');
         generateBtn.disabled = true;
         
-        // Show and update upload progress
+        // Show upload progress
         uploadProgress.classList.remove('d-none');
+        
+        // Update file info
         document.getElementById('fileName').textContent = file.name;
         document.getElementById('fileSize').textContent = formatFileSize(file.size);
         document.getElementById('uploadStatus').textContent = 'Reading file...';
         document.getElementById('percentage').textContent = '0%';
         document.getElementById('progressBar').style.width = '0%';
+        document.getElementById('progressBar').setAttribute('aria-valuenow', '0');
         
         const reader = new FileReader();
         
+        // Handle upload progress
         reader.onprogress = function(e) {
             if (e.lengthComputable) {
                 const percentLoaded = Math.round((e.loaded / e.total) * 100);
-                updateProgress(percentLoaded, 'Reading file...');
+                document.getElementById('progressBar').style.width = percentLoaded + '%';
+                document.getElementById('percentage').textContent = percentLoaded + '%';
             }
         };
-
-        reader.onload = function(e) {
+    reader.onload = function(e) {
             try {
-                updateProgress(100, 'Processing data...');
-                
+                // Update progress to 80%
+                document.getElementById('progressBar').style.width = '80%';
+                document.getElementById('percentage').textContent = '80%';
+                document.getElementById('uploadStatus').textContent = 'Processing data...';
+
                 const data = new Uint8Array(e.target.result);
                 const workbook = XLSX.read(data, { 
                     type: 'array',
-                    cellDates: true,
-                    cellNF: true,
-                    cellText: true
+                    cellDates: true, // Parse dates
+                    cellNF: true,    // Parse numbers
+                    cellText: true,  // Parse text
+                    raw: false       // Convert values to their proper types
                 });
                 
                 // Get the first worksheet
                 const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                
-                // Convert to JSON
+                  // Convert to JSON
                 parsedData = XLSX.utils.sheet_to_json(firstSheet, { 
                     header: 1,
-                    defval: '',
-                    blankrows: false
+                    defval: '', // Default value for empty cells
+                    blankrows: false // Skip empty rows
                 });
                 
                 if (parsedData.length === 0) {
                     showError('The file appears to be empty');
                     return;
                 }
+
+                // Update progress to complete
+                document.getElementById('progressBar').style.width = '100%';
+                document.getElementById('percentage').textContent = '100%';
+                document.getElementById('uploadStatus').textContent = 'Complete!';
 
                 // Store data in localStorage
                 try {
@@ -116,16 +127,33 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
 
-                // Update progress and show preview
-                updateProgress(100, 'Complete!');
+                // Wait a moment to show completion, then show preview
                 setTimeout(() => {
                     uploadProgress.classList.add('d-none');
                     showPreview(parsedData);
                 }, 500);
+                });
+                
+                if (parsedData.length === 0) {
+                    showError('The file appears to be empty');
+                    return;
+                }
 
+                // Clean up the data
+                parsedData = cleanData(parsedData);
+
+                // Store data in localStorage
+                localStorage.setItem('excelData', JSON.stringify(parsedData));
+                
+                // Show preview                showPreview(parsedData);
+                
+                // Enable generate button
+                if (generateBtn) {
+                    generateBtn.removeAttribute('disabled');
+                }
             } catch (error) {
                 console.error('Error parsing file:', error);
-                showError('Error parsing file. Please make sure it\'s a valid Excel file.');
+                showError('Error parsing file. Please make sure the file is not corrupted and try again.');
             }
         };
 
@@ -136,58 +164,81 @@ document.addEventListener('DOMContentLoaded', function() {
         reader.readAsArrayBuffer(file);
     }
 
+    function isValidFile(file) {
+        const validExtensions = [
+            // Excel formats
+            'xlsx', 'xls', 'xlsm', 'xlsb', 'xlt', 'xltm', 'xltx',
+            // Legacy formats
+            'biff2', 'biff3', 'biff4', 'biff5', 'biff8',
+            'wbk', 'wks', 'wq1', 'wq2', 'xlk',
+            // Other formats
+            'csv', 'txt', 'ods', 'fods'
+        ];
+
+        const extension = file.name.split('.').pop().toLowerCase();
+        return validExtensions.includes(extension);
+    }
+
+    function cleanData(data) {
+        // Remove empty rows and columns
+        return data
+            .filter(row => row.some(cell => cell !== '' && cell !== null))
+            .map(row => {
+                // Find the last non-empty cell
+                let lastIndex = row.length - 1;
+                while (lastIndex >= 0 && (row[lastIndex] === '' || row[lastIndex] === null)) {
+                    lastIndex--;
+                }
+                // Trim the row to remove trailing empty cells
+                return row.slice(0, lastIndex + 1);
+            });
+    }
+
     function showPreview(data) {
-        // Clear existing preview
+        // Clear existing table
         tableHeader.innerHTML = '';
         tableBody.innerHTML = '';
 
-        // Add headers (first row)
+        // Add headers
         const headers = data[0];
         headers.forEach(header => {
             const th = document.createElement('th');
-            th.textContent = header || '';
-            th.scope = 'col';
+            th.textContent = header;
+            th.className = 'text-nowrap'; // Prevent header text wrapping
             tableHeader.appendChild(th);
         });
 
-        // Add first 5 rows of data
+        // Add rows (limit to 5 rows for preview)
         const previewRows = data.slice(1, 6);
         previewRows.forEach(row => {
             const tr = document.createElement('tr');
             row.forEach(cell => {
                 const td = document.createElement('td');
-                td.textContent = formatCell(cell);
+                // Format cell content based on type
+                if (typeof cell === 'number') {
+                    td.textContent = cell.toLocaleString();
+                    td.className = 'text-end'; // Right-align numbers
+                } else if (cell instanceof Date) {
+                    td.textContent = cell.toLocaleDateString();
+                } else {
+                    td.textContent = cell;
+                }
                 tr.appendChild(td);
             });
             tableBody.appendChild(tr);
         });
 
-        // Show preview section and enable generate button
+        // Show preview section
         previewSection.classList.remove('d-none');
-        generateBtn.disabled = false;
+    }    function showError(message) {
+        errorMessage.textContent = message;
+        const toast = new bootstrap.Toast(errorToast);
+        toast.show();
+        
+        // Hide progress
+        uploadProgress.classList.add('d-none');
     }
-
-    function formatCell(value) {
-        if (value === null || value === undefined) return '';
-        if (value instanceof Date) return value.toLocaleDateString();
-        if (typeof value === 'number') return value.toLocaleString();
-        return value.toString();
-    }
-
-    function updateProgress(percent, status) {
-        document.getElementById('progressBar').style.width = percent + '%';
-        document.getElementById('percentage').textContent = percent + '%';
-        if (status) {
-            document.getElementById('uploadStatus').textContent = status;
-        }
-    }
-
-    function isValidFile(file) {
-        const validExtensions = ['xlsx', 'xls', 'csv'];
-        const extension = file.name.split('.').pop().toLowerCase();
-        return validExtensions.includes(extension);
-    }
-
+    
     function formatFileSize(bytes) {
         if (bytes === 0) return '0 Bytes';
         const k = 1024;
@@ -196,28 +247,39 @@ document.addEventListener('DOMContentLoaded', function() {
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     }
 
-    function showError(message) {
-        errorMessage.textContent = message;
-        const toast = new bootstrap.Toast(errorToast);
-        toast.show();
-        uploadProgress.classList.add('d-none');
-    }
-
     // Handle cancel button
     cancelBtn.addEventListener('click', function() {
         previewSection.classList.add('d-none');
-        uploadProgress.classList.add('d-none');
         fileInput.value = '';
         parsedData = null;
         localStorage.removeItem('excelData');
-    });
-
-    // Handle generate button
+    });    // Handle generate button
     generateBtn.addEventListener('click', function() {
         if (!parsedData) {
             showError('Please upload a file first');
             return;
         }
-        window.location.href = 'dashboard.html';
+        
+        // Store the data and redirect to dashboard
+        try {
+            localStorage.setItem('excelData', JSON.stringify(parsedData));
+            window.location.href = 'dashboard.html';
+        } catch (error) {
+            showError('Error saving data. The file might be too large.');
+            return;
+        }
+
+        // Show loading state
+        const originalText = this.innerHTML;
+        this.innerHTML = `
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            Generating Dashboard...
+        `;
+        this.disabled = true;
+
+        // Redirect to dashboard after a short delay
+        setTimeout(() => {
+            window.location.href = 'dashboard.html';
+        }, 1000);
     });
-});
+}); 

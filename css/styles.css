@@ -25,6 +25,24 @@ body {
     font-weight: 600;
 }
 
+/* Active Navigation Link */
+.navbar-dark .navbar-nav .nav-link.active {
+    color: var(--primary-color) !important;
+    font-weight: 500;
+    position: relative;
+}
+
+.navbar-dark .navbar-nav .nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0.5rem;
+    right: 0.5rem;
+    height: 2px;
+    background-color: var(--primary-color);
+    border-radius: 2px;
+}
+
 /* Card Styles */
 .card {
     border: none;
@@ -288,4 +306,4 @@ body {
     border-top: 1px solid #dee2e6;
     background-color: #f8f9fa;
     border-radius: 0 0 0.5rem 0.5rem;
-} 
+}
