@@ -62,7 +62,7 @@ All dependencies are loaded via CDN for simplicity.
 
 ## License
 
-MIT License - feel free to use this project for any purpose.
+MIT License - feel free to use this project for any purpose...
 
 ## Contributing
 
