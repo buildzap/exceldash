@@ -543,7 +543,7 @@
                 <div class="row mb-4">
                     <div class="col-md-6">
                         <div class="card shadow-sm h-100">
-                            <div class="card-header bg-white py-2">
+                            <div class="card-header bg-blue py-2">
                                 <h6 class="card-title mb-0">Main Chart</h6>
                             </div>
                             <div class="card-body">
@@ -553,7 +553,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="card shadow-sm h-100">
-                            <div class="card-header bg-white py-2 d-flex justify-content-start">
+                            <div class="card-header bg-blue py-2 d-flex justify-content-start">
                                 <h6 class="card-title mb-0">Distribution</h6>
                             </div>
                             <div class="card-body">
@@ -567,8 +567,12 @@
                 <div class="row mb-4">
                     <div class="col-md-4">
                         <div class="card shadow-sm h-100">
-                            <div class="card-header bg-white py-2">
+                            <div class="card-header bg-blue py-2">
                                 <h6 class="card-title mb-0">Trend Analysis</h6>
+                                <div class="d-flex gap-2">
+                                    <select class="form-select form-select-sm" id="trendXAxisFilter" style="width: 120px;"></select>
+                                    <select class="form-select form-select-sm" id="trendYAxisFilter" style="width: 120px;"></select>
+                                </div>
                             </div>
                             <div class="card-body">
                                 <canvas id="trendChart" height="200"></canvas>
@@ -577,8 +581,12 @@
                     </div>
                     <div class="col-md-4">
                         <div class="card shadow-sm h-100">
-                            <div class="card-header bg-white py-2">
+                            <div class="card-header bg-blue py-2">
                                 <h6 class="card-title mb-0">Category Comparison</h6>
+                                <div class="d-flex gap-2">
+                                    <select class="form-select form-select-sm" id="comparisonXAxisFilter" style="width: 120px;"></select>
+                                    <select class="form-select form-select-sm" id="comparisonYAxisFilter" style="width: 120px;"></select>
+                                </div>
                             </div>
                             <div class="card-body">
                                 <canvas id="comparisonChart" height="200"></canvas>
@@ -587,8 +595,12 @@
                     </div>
                     <div class="col-md-4">
                         <div class="card shadow-sm h-100">
-                            <div class="card-header bg-white py-2">
+                            <div class="card-header bg-blue py-2">
                                 <h6 class="card-title mb-0">Performance Metrics</h6>
+                                <div class="d-flex gap-2">
+                                    <select class="form-select form-select-sm" id="metricsXAxisFilter" style="width: 120px;"></select>
+                                    <select class="form-select form-select-sm" id="metricsYAxisFilter" style="width: 120px;"></select>
+                                </div>
                             </div>
                             <div class="card-body">
                                 <canvas id="metricsChart" height="200"></canvas>
@@ -601,8 +613,12 @@
                 <div class="row mb-4">
                     <div class="col-md-6">
                         <div class="card shadow-sm h-100">
-                            <div class="card-header bg-white py-2">
+                            <div class="card-header bg-blue py-2">
                                 <h6 class="card-title mb-0">Sales-Units-Revenue Analysis</h6>
+                                <div class="d-flex gap-2">
+                                    <select class="form-select form-select-sm" id="bubbleXAxisFilter" style="width: 120px;"></select>
+                                    <select class="form-select form-select-sm" id="bubbleYAxisFilter" style="width: 120px;"></select>
+                                </div>
                             </div>
                             <div class="card-body">
                                 <canvas id="bubbleChart" height="250"></canvas>
@@ -611,8 +627,12 @@
                     </div>
                     <div class="col-md-6">
                         <div class="card shadow-sm h-100">
-                            <div class="card-header bg-white py-2">
+                            <div class="card-header bg-blue py-2">
                                 <h6 class="card-title mb-0">Category Performance Radar</h6>
+                                <div class="d-flex gap-2">
+                                    <select class="form-select form-select-sm" id="radarXAxisFilter" style="width: 120px;"></select>
+                                    <select class="form-select form-select-sm" id="radarYAxisFilter" style="width: 120px;"></select>
+                                </div>
                             </div>
                             <div class="card-body">
                                 <canvas id="radarChart" height="250"></canvas>
@@ -625,8 +645,12 @@
                 <div class="row mb-4">
                     <div class="col-md-6">
                         <div class="card shadow-sm h-100">
-                            <div class="card-header bg-white py-2">
+                            <div class="card-header bg-blue py-2">
                                 <h6 class="card-title mb-0">Revenue Distribution</h6>
+                                <div class="d-flex gap-2">
+                                    <select class="form-select form-select-sm" id="doughnutXAxisFilter" style="width: 120px;"></select>
+                                    <select class="form-select form-select-sm" id="doughnutYAxisFilter" style="width: 120px;"></select>
+                                </div>
                             </div>
                             <div class="card-body">
                                 <canvas id="doughnutChart" height="250"></canvas>
@@ -635,8 +659,12 @@
                     </div>
                     <div class="col-md-6">
                         <div class="card shadow-sm h-100">
-                            <div class="card-header bg-white py-2">
+                            <div class="card-header bg-blue py-2">
                                 <h6 class="card-title mb-0">Product Category Analysis</h6>
+                                <div class="d-flex gap-2">
+                                    <select class="form-select form-select-sm" id="stackedBarXAxisFilter" style="width: 120px;"></select>
+                                    <select class="form-select form-select-sm" id="stackedBarYAxisFilter" style="width: 120px;"></select>
+                                </div>
                             </div>
                             <div class="card-body">
                                 <canvas id="stackedBarChart" height="250"></canvas>

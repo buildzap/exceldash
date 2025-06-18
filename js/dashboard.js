@@ -741,6 +741,675 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // === Trend Analysis Axis Filters from Excel Headers ===
+    function populateTrendAxisFilter() {
+        const trendAxisFilter = document.getElementById('trendAxisFilter');
+        if (!trendAxisFilter || !headers || headers.length === 0) return;
+        trendAxisFilter.innerHTML = '';
+        // X-axis: all columns
+        headers.forEach((header, idx) => {
+            const xOption = document.createElement('option');
+            xOption.value = `x-${idx}`;
+            xOption.text = `X: ${header}`;
+            trendAxisFilter.appendChild(xOption);
+        });
+        // Y-axis: only numeric columns (skip 0,1,2 for likely non-numeric)
+        headers.forEach((header, idx) => {
+            if (idx > 2) {
+                const yOption = document.createElement('option');
+                yOption.value = `y-${idx}`;
+                yOption.text = `Y: ${header}`;
+                trendAxisFilter.appendChild(yOption);
+            }
+        });
+        trendAxisFilter.value = 'x-2'; // Default X: Date
+    }
+
+    // Listen for changes
+    document.getElementById('trendAxisFilter')?.addEventListener('change', updateTrendChartFromFilter);
+
+    function updateTrendChartFromFilter() {
+        const trendAxisFilter = document.getElementById('trendAxisFilter');
+        if (!trendAxisFilter) return;
+        const value = trendAxisFilter.value;
+        let xIndex = 2, yIndex = 5; // Defaults: Date vs Revenue
+        if (value.startsWith('x-')) xIndex = parseInt(value.split('-')[1]);
+        if (value.startsWith('y-')) yIndex = parseInt(value.split('-')[1]);
+        // Prepare data
+        const xValues = [...new Set(filteredData.map(row => row[xIndex]))].sort();
+        const chartData = xValues.map(xVal => {
+            const rows = filteredData.filter(row => row[xIndex] === xVal);
+            return {
+                x: xVal,
+                y: rows.reduce((sum, row) => sum + parseNumericValue(row[yIndex]), 0)
+            };
+        });
+        createChart('trendChart', {
+            type: 'line',
+            data: {
+                labels: chartData.map(d => d.x),
+                datasets: [{
+                    label: `${headers[yIndex]} by ${headers[xIndex]}`,
+                    data: chartData.map(d => d.y),
+                    borderColor: 'rgba(13,110,253,1)',
+                    backgroundColor: 'rgba(13,110,253,0.1)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                plugins: {
+                    title: {
+                        display: true,
+                        text: `${headers[yIndex]} by ${headers[xIndex]}`
+                    }
+                },
+                scales: {
+                    x: { title: { display: true, text: headers[xIndex] } },
+                    y: { beginAtZero: true, title: { display: true, text: headers[yIndex] } }
+                }
+            }
+        });
+    }
+
+    // Call after data is loaded
+    // In initializeDashboard or after headers/filteredData are set:
+    setTimeout(() => {
+        populateTrendAxisFilter();
+        updateTrendChartFromFilter();
+    }, 200);
+
+    // === Trend Analysis Separate X & Y Axis Filters ===
+    function populateTrendAxisFilters() {
+        const xFilter = document.getElementById('trendXAxisFilter');
+        const yFilter = document.getElementById('trendYAxisFilter');
+        if (!xFilter || !yFilter || !headers || headers.length === 0) return;
+        xFilter.innerHTML = '';
+        yFilter.innerHTML = '';
+        // X-axis: all columns
+        headers.forEach((header, idx) => {
+            const xOption = document.createElement('option');
+            xOption.value = idx;
+            xOption.text = header;
+            xFilter.appendChild(xOption);
+        });
+        // Y-axis: only numeric columns (skip 0,1,2 for likely non-numeric)
+        headers.forEach((header, idx) => {
+            if (idx > 2) {
+                const yOption = document.createElement('option');
+                yOption.value = idx;
+                yOption.text = header;
+                yFilter.appendChild(yOption);
+            }
+        });
+        xFilter.value = 2; // Default X: Date
+        yFilter.value = 5; // Default Y: Revenue
+    }
+
+    document.getElementById('trendXAxisFilter')?.addEventListener('change', updateTrendChartFromFilters);
+    document.getElementById('trendYAxisFilter')?.addEventListener('change', updateTrendChartFromFilters);
+
+    function updateTrendChartFromFilters() {
+        const xFilter = document.getElementById('trendXAxisFilter');
+        const yFilter = document.getElementById('trendYAxisFilter');
+        if (!xFilter || !yFilter) return;
+        const xIndex = parseInt(xFilter.value);
+        const yIndex = parseInt(yFilter.value);
+        const xValues = [...new Set(filteredData.map(row => row[xIndex]))].sort();
+        const chartData = xValues.map(xVal => {
+            const rows = filteredData.filter(row => row[xIndex] === xVal);
+            return {
+                x: xVal,
+                y: rows.reduce((sum, row) => sum + parseNumericValue(row[yIndex]), 0)
+            };
+        });
+        createChart('trendChart', {
+            type: 'line',
+            data: {
+                labels: chartData.map(d => d.x),
+                datasets: [{
+                    label: `${headers[yIndex]} by ${headers[xIndex]}`,
+                    data: chartData.map(d => d.y),
+                    borderColor: 'rgba(13,110,253,1)',
+                    backgroundColor: 'rgba(13,110,253,0.1)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                plugins: {
+                    title: {
+                        display: true,
+                        text: `${headers[yIndex]} by ${headers[xIndex]}`
+                    }
+                },
+                scales: {
+                    x: { title: { display: true, text: headers[xIndex] } },
+                    y: { beginAtZero: true, title: { display: true, text: headers[yIndex] } }
+                }
+            }
+        });
+    }
+
+    // Call after data is loaded
+    setTimeout(() => {
+        populateTrendAxisFilters();
+        updateTrendChartFromFilters();
+    }, 200);
+
+    // === Comparison Chart Separate X & Y Axis Filters ===
+    function populateComparisonAxisFilters() {
+        const xFilter = document.getElementById('comparisonXAxisFilter');
+        const yFilter = document.getElementById('comparisonYAxisFilter');
+        if (!xFilter || !yFilter || !headers || headers.length === 0) return;
+        xFilter.innerHTML = '';
+        yFilter.innerHTML = '';
+        // X-axis: all columns
+        headers.forEach((header, idx) => {
+            const xOption = document.createElement('option');
+            xOption.value = idx;
+            xOption.text = header;
+            xFilter.appendChild(xOption);
+        });
+        // Y-axis: only numeric columns (skip 0,1,2 for likely non-numeric)
+        headers.forEach((header, idx) => {
+            if (idx > 2) {
+                const yOption = document.createElement('option');
+                yOption.value = idx;
+                yOption.text = header;
+                yFilter.appendChild(yOption);
+            }
+        });
+        xFilter.value = 0; // Default X: Category
+        yFilter.value = 3; // Default Y: Sales
+    }
+
+    document.getElementById('comparisonXAxisFilter')?.addEventListener('change', updateComparisonChartFromFilters);
+    document.getElementById('comparisonYAxisFilter')?.addEventListener('change', updateComparisonChartFromFilters);
+
+    function updateComparisonChartFromFilters() {
+        const xFilter = document.getElementById('comparisonXAxisFilter');
+        const yFilter = document.getElementById('comparisonYAxisFilter');
+        if (!xFilter || !yFilter) return;
+        const xIndex = parseInt(xFilter.value);
+        const yIndex = parseInt(yFilter.value);
+        const xValues = [...new Set(filteredData.map(row => row[xIndex]))].sort();
+        const chartData = xValues.map(xVal => {
+            const rows = filteredData.filter(row => row[xIndex] === xVal);
+            return {
+                x: xVal,
+                y: rows.reduce((sum, row) => sum + parseNumericValue(row[yIndex]), 0)
+            };
+        });
+        createChart('comparisonChart', {
+            type: 'bar',
+            data: {
+                labels: chartData.map(d => d.x),
+                datasets: [{
+                    label: `${headers[yIndex]} by ${headers[xIndex]}`,
+                    data: chartData.map(d => d.y),
+                    backgroundColor: 'rgba(13,110,253,0.6)',
+                    borderColor: 'rgba(13,110,253,1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                plugins: {
+                    title: {
+                        display: true,
+                        text: `${headers[yIndex]} by ${headers[xIndex]}`
+                    }
+                },
+                scales: {
+                    x: { title: { display: true, text: headers[xIndex] } },
+                    y: { beginAtZero: true, title: { display: true, text: headers[yIndex] } }
+                }
+            }
+        });
+    }
+
+    // Call after data is loaded
+    setTimeout(() => {
+        populateTrendAxisFilters();
+        updateTrendChartFromFilters();
+        populateComparisonAxisFilters();
+        updateComparisonChartFromFilters();
+    }, 200);
+
+    // === Advanced Charts Shared X & Y Axis Filters ===
+    function populateAdvancedAxisFilters() {
+        const xFilter = document.getElementById('advancedXAxisFilter');
+        const yFilter = document.getElementById('advancedYAxisFilter');
+        if (!xFilter || !yFilter || !headers || headers.length === 0) return;
+        xFilter.innerHTML = '';
+        yFilter.innerHTML = '';
+        headers.forEach((header, idx) => {
+            const xOption = document.createElement('option');
+            xOption.value = idx;
+            xOption.text = header;
+            xFilter.appendChild(xOption);
+        });
+        headers.forEach((header, idx) => {
+            if (idx > 2) {
+                const yOption = document.createElement('option');
+                yOption.value = idx;
+                yOption.text = header;
+                yFilter.appendChild(yOption);
+            }
+        });
+        xFilter.value = 0; // Default X: Category
+        yFilter.value = 3; // Default Y: Sales
+    }
+
+    document.getElementById('advancedXAxisFilter')?.addEventListener('change', updateAdvancedChartsFromFilters);
+    document.getElementById('advancedYAxisFilter')?.addEventListener('change', updateAdvancedChartsFromFilters);
+
+    function updateAdvancedChartsFromFilters() {
+        const xFilter = document.getElementById('advancedXAxisFilter');
+        const yFilter = document.getElementById('advancedYAxisFilter');
+        if (!xFilter || !yFilter) return;
+        const xIndex = parseInt(xFilter.value);
+        const yIndex = parseInt(yFilter.value);
+        // --- Performance Metrics Chart ---
+        const uniqueX = [...new Set(filteredData.map(row => row[xIndex]))].sort();
+        const metricsData = uniqueX.map(xVal => {
+            const rows = filteredData.filter(row => row[xIndex] === xVal);
+            return rows.reduce((sum, row) => sum + parseNumericValue(row[yIndex]), 0);
+        });
+        createChart('metricsChart', {
+            type: 'radar',
+            data: {
+                labels: uniqueX,
+                datasets: [{
+                    label: `${headers[yIndex]} by ${headers[xIndex]}`,
+                    data: metricsData,
+                    backgroundColor: 'rgba(13,110,253,0.2)',
+                    borderColor: 'rgba(13,110,253,1)',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                plugins: {
+                    title: {
+                        display: true,
+                        text: `${headers[yIndex]} by ${headers[xIndex]}`
+                    }
+                },
+                scales: { r: { beginAtZero: true } }
+            }
+        });
+        // --- Sales-Units-Revenue Analysis (Bubble) ---
+        const bubbleData = filteredData.map(row => ({
+            x: parseNumericValue(row[xIndex]),
+            y: parseNumericValue(row[yIndex]),
+            r: Math.sqrt(parseNumericValue(row[yIndex]) / 1000),
+            category: row[xIndex]
+        }));
+        createChart('bubbleChart', {
+            type: 'bubble',
+            data: {
+                datasets: uniqueX.map((xVal, index) => ({
+                    label: xVal,
+                    data: bubbleData.filter(item => item.category === xVal),
+                    backgroundColor: `hsla(${(360 / uniqueX.length) * index}, 70%, 50%, 0.6)`,
+                    borderColor: `hsla(${(360 / uniqueX.length) * index}, 70%, 50%, 1)`
+                }))
+            },
+            options: {
+                plugins: {
+                    title: {
+                        display: true,
+                        text: `${headers[yIndex]} vs ${headers[xIndex]} (bubble size)`
+                    }
+                },
+                scales: {
+                    x: { title: { display: true, text: headers[xIndex] } },
+                    y: { title: { display: true, text: headers[yIndex] } }
+                }
+            }
+        });
+        // --- Category Performance Radar ---
+        createChart('radarChart', {
+            type: 'radar',
+            data: {
+                labels: uniqueX,
+                datasets: [{
+                    label: `${headers[yIndex]} by ${headers[xIndex]}`,
+                    data: metricsData,
+                    backgroundColor: 'rgba(13,110,253,0.2)',
+                    borderColor: 'rgba(13,110,253,1)',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                plugins: {
+                    title: {
+                        display: true,
+                        text: `${headers[yIndex]} by ${headers[xIndex]}`
+                    }
+                },
+                scales: { r: { beginAtZero: true } }
+            }
+        });
+        // --- Revenue Distribution (Doughnut) ---
+        createChart('doughnutChart', {
+            type: 'doughnut',
+            data: {
+                labels: uniqueX,
+                datasets: [{
+                    data: metricsData,
+                    backgroundColor: uniqueX.map((_, i) => `hsla(${(360 / uniqueX.length) * i}, 70%, 50%, 0.6)`),
+                    borderColor: uniqueX.map((_, i) => `hsla(${(360 / uniqueX.length) * i}, 70%, 50%, 1)`),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                plugins: {
+                    title: {
+                        display: true,
+                        text: `${headers[yIndex]} Distribution by ${headers[xIndex]}`
+                    }
+                }
+            }
+        });
+        // --- Product Category Analysis (Stacked Bar) ---
+        const products = [...new Set(filteredData.map(row => row[1]))];
+        const productData = {};
+        filteredData.forEach(row => {
+            const product = row[1];
+            const xVal = row[xIndex];
+            const yVal = parseNumericValue(row[yIndex]);
+            if (!productData[product]) productData[product] = {};
+            if (!productData[product][xVal]) productData[product][xVal] = 0;
+            productData[product][xVal] += yVal;
+        });
+        createChart('stackedBarChart', {
+            type: 'bar',
+            data: {
+                labels: products,
+                datasets: uniqueX.map((xVal, index) => ({
+                    label: xVal,
+                    data: products.map(product => productData[product]?.[xVal] || 0),
+                    backgroundColor: `hsla(${(360 / uniqueX.length) * index}, 70%, 50%, 0.6)`,
+                    borderColor: `hsla(${(360 / uniqueX.length) * index}, 70%, 50%, 1)`,
+                    borderWidth: 1,
+                    stack: 'stack0'
+                }))
+            },
+            options: {
+                plugins: {
+                    title: {
+                        display: true,
+                        text: `${headers[yIndex]} by Product and ${headers[xIndex]}`
+                    }
+                },
+                scales: {
+                    x: { stacked: true, title: { display: true, text: 'Products' } },
+                    y: { stacked: true, beginAtZero: true, title: { display: true, text: headers[yIndex] } }
+                }
+            }
+        });
+    }
+
+    // Call after data is loaded
+    setTimeout(() => {
+        populateTrendAxisFilters();
+        updateTrendChartFromFilters();
+        populateComparisonAxisFilters();
+        updateComparisonChartFromFilters();
+        populateAdvancedAxisFilters();
+        updateAdvancedChartsFromFilters();
+    }, 200);
+
+    // === Individual X & Y Axis Filters for Advanced Charts ===
+    function populateIndividualAdvancedAxisFilters() {
+        const filterPairs = [
+            { x: 'metricsXAxisFilter', y: 'metricsYAxisFilter' },
+            { x: 'bubbleXAxisFilter', y: 'bubbleYAxisFilter' },
+            { x: 'radarXAxisFilter', y: 'radarYAxisFilter' },
+            { x: 'doughnutXAxisFilter', y: 'doughnutYAxisFilter' },
+            { x: 'stackedBarXAxisFilter', y: 'stackedBarYAxisFilter' }
+        ];
+        filterPairs.forEach(({ x, y }) => {
+            const xFilter = document.getElementById(x);
+            const yFilter = document.getElementById(y);
+            if (!xFilter || !yFilter || !headers || headers.length === 0) return;
+            xFilter.innerHTML = '';
+            yFilter.innerHTML = '';
+            headers.forEach((header, idx) => {
+                const xOption = document.createElement('option');
+                xOption.value = idx;
+                xOption.text = header;
+                xFilter.appendChild(xOption);
+            });
+            headers.forEach((header, idx) => {
+                if (idx > 2) {
+                    const yOption = document.createElement('option');
+                    yOption.value = idx;
+                    yOption.text = header;
+                    yFilter.appendChild(yOption);
+                }
+            });
+            xFilter.value = 0;
+            yFilter.value = 3;
+        });
+    }
+
+    function addIndividualAdvancedAxisListeners() {
+        const chartConfigs = [
+            { x: 'metricsXAxisFilter', y: 'metricsYAxisFilter', update: updateMetricsChartFromFilters },
+            { x: 'bubbleXAxisFilter', y: 'bubbleYAxisFilter', update: updateBubbleChartFromFilters },
+            { x: 'radarXAxisFilter', y: 'radarYAxisFilter', update: updateRadarChartFromFilters },
+            { x: 'doughnutXAxisFilter', y: 'doughnutYAxisFilter', update: updateDoughnutChartFromFilters },
+            { x: 'stackedBarXAxisFilter', y: 'stackedBarYAxisFilter', update: updateStackedBarChartFromFilters }
+        ];
+        chartConfigs.forEach(({ x, y, update }) => {
+            document.getElementById(x)?.addEventListener('change', update);
+            document.getElementById(y)?.addEventListener('change', update);
+        });
+    }
+
+    function updateMetricsChartFromFilters() {
+        const xFilter = document.getElementById('metricsXAxisFilter');
+        const yFilter = document.getElementById('metricsYAxisFilter');
+        if (!xFilter || !yFilter) return;
+        const xIndex = parseInt(xFilter.value);
+        const yIndex = parseInt(yFilter.value);
+        const uniqueX = [...new Set(filteredData.map(row => row[xIndex]))].sort();
+        const metricsData = uniqueX.map(xVal => {
+            const rows = filteredData.filter(row => row[xIndex] === xVal);
+            return rows.reduce((sum, row) => sum + parseNumericValue(row[yIndex]), 0);
+        });
+        createChart('metricsChart', {
+            type: 'radar',
+            data: {
+                labels: uniqueX,
+                datasets: [{
+                    label: `${headers[yIndex]} by ${headers[xIndex]}`,
+                    data: metricsData,
+                    backgroundColor: 'rgba(13,110,253,0.2)',
+                    borderColor: 'rgba(13,110,253,1)',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                plugins: {
+                    title: {
+                        display: true,
+                        text: `${headers[yIndex]} by ${headers[xIndex]}`
+                    }
+                },
+                scales: { r: { beginAtZero: true } }
+            }
+        });
+    }
+
+    function updateBubbleChartFromFilters() {
+        const xFilter = document.getElementById('bubbleXAxisFilter');
+        const yFilter = document.getElementById('bubbleYAxisFilter');
+        if (!xFilter || !yFilter) return;
+        const xIndex = parseInt(xFilter.value);
+        const yIndex = parseInt(yFilter.value);
+        const uniqueX = [...new Set(filteredData.map(row => row[xIndex]))].sort();
+        const bubbleData = filteredData.map(row => ({
+            x: parseNumericValue(row[xIndex]),
+            y: parseNumericValue(row[yIndex]),
+            r: Math.sqrt(parseNumericValue(row[yIndex]) / 1000),
+            category: row[xIndex]
+        }));
+        createChart('bubbleChart', {
+            type: 'bubble',
+            data: {
+                datasets: uniqueX.map((xVal, index) => ({
+                    label: xVal,
+                    data: bubbleData.filter(item => item.category === xVal),
+                    backgroundColor: `hsla(${(360 / uniqueX.length) * index}, 70%, 50%, 0.6)`,
+                    borderColor: `hsla(${(360 / uniqueX.length) * index}, 70%, 50%, 1)`
+                }))
+            },
+            options: {
+                plugins: {
+                    title: {
+                        display: true,
+                        text: `${headers[yIndex]} vs ${headers[xIndex]} (bubble size)`
+                    }
+                },
+                scales: {
+                    x: { title: { display: true, text: headers[xIndex] } },
+                    y: { title: { display: true, text: headers[yIndex] } }
+                }
+            }
+        });
+    }
+
+    function updateRadarChartFromFilters() {
+        const xFilter = document.getElementById('radarXAxisFilter');
+        const yFilter = document.getElementById('radarYAxisFilter');
+        if (!xFilter || !yFilter) return;
+        const xIndex = parseInt(xFilter.value);
+        const yIndex = parseInt(yFilter.value);
+        const uniqueX = [...new Set(filteredData.map(row => row[xIndex]))].sort();
+        const metricsData = uniqueX.map(xVal => {
+            const rows = filteredData.filter(row => row[xIndex] === xVal);
+            return rows.reduce((sum, row) => sum + parseNumericValue(row[yIndex]), 0);
+        });
+        createChart('radarChart', {
+            type: 'radar',
+            data: {
+                labels: uniqueX,
+                datasets: [{
+                    label: `${headers[yIndex]} by ${headers[xIndex]}`,
+                    data: metricsData,
+                    backgroundColor: 'rgba(13,110,253,0.2)',
+                    borderColor: 'rgba(13,110,253,1)',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                plugins: {
+                    title: {
+                        display: true,
+                        text: `${headers[yIndex]} by ${headers[xIndex]}`
+                    }
+                },
+                scales: { r: { beginAtZero: true } }
+            }
+        });
+    }
+
+    function updateDoughnutChartFromFilters() {
+        const xFilter = document.getElementById('doughnutXAxisFilter');
+        const yFilter = document.getElementById('doughnutYAxisFilter');
+        if (!xFilter || !yFilter) return;
+        const xIndex = parseInt(xFilter.value);
+        const yIndex = parseInt(yFilter.value);
+        const uniqueX = [...new Set(filteredData.map(row => row[xIndex]))].sort();
+        const metricsData = uniqueX.map(xVal => {
+            const rows = filteredData.filter(row => row[xIndex] === xVal);
+            return rows.reduce((sum, row) => sum + parseNumericValue(row[yIndex]), 0);
+        });
+        createChart('doughnutChart', {
+            type: 'doughnut',
+            data: {
+                labels: uniqueX,
+                datasets: [{
+                    data: metricsData,
+                    backgroundColor: uniqueX.map((_, i) => `hsla(${(360 / uniqueX.length) * i}, 70%, 50%, 0.6)`),
+                    borderColor: uniqueX.map((_, i) => `hsla(${(360 / uniqueX.length) * i}, 70%, 50%, 1)`),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                plugins: {
+                    title: {
+                        display: true,
+                        text: `${headers[yIndex]} Distribution by ${headers[xIndex]}`
+                    }
+                }
+            }
+        });
+    }
+
+    function updateStackedBarChartFromFilters() {
+        const xFilter = document.getElementById('stackedBarXAxisFilter');
+        const yFilter = document.getElementById('stackedBarYAxisFilter');
+        if (!xFilter || !yFilter) return;
+        const xIndex = parseInt(xFilter.value);
+        const yIndex = parseInt(yFilter.value);
+        const uniqueX = [...new Set(filteredData.map(row => row[xIndex]))].sort();
+        const products = [...new Set(filteredData.map(row => row[1]))];
+        const productData = {};
+        filteredData.forEach(row => {
+            const product = row[1];
+            const xVal = row[xIndex];
+            const yVal = parseNumericValue(row[yIndex]);
+            if (!productData[product]) productData[product] = {};
+            if (!productData[product][xVal]) productData[product][xVal] = 0;
+            productData[product][xVal] += yVal;
+        });
+        createChart('stackedBarChart', {
+            type: 'bar',
+            data: {
+                labels: products,
+                datasets: uniqueX.map((xVal, index) => ({
+                    label: xVal,
+                    data: products.map(product => productData[product]?.[xVal] || 0),
+                    backgroundColor: `hsla(${(360 / uniqueX.length) * index}, 70%, 50%, 0.6)`,
+                    borderColor: `hsla(${(360 / uniqueX.length) * index}, 70%, 50%, 1)`,
+                    borderWidth: 1,
+                    stack: 'stack0'
+                }))
+            },
+            options: {
+                plugins: {
+                    title: {
+                        display: true,
+                        text: `${headers[yIndex]} by Product and ${headers[xIndex]}`
+                    }
+                },
+                scales: {
+                    x: { stacked: true, title: { display: true, text: 'Products' } },
+                    y: { stacked: true, beginAtZero: true, title: { display: true, text: headers[yIndex] } }
+                }
+            }
+        });
+    }
+
+    // Call after data is loaded
+    setTimeout(() => {
+        populateTrendAxisFilters();
+        updateTrendChartFromFilters();
+        populateComparisonAxisFilters();
+        updateComparisonChartFromFilters();
+        populateIndividualAdvancedAxisFilters();
+        addIndividualAdvancedAxisListeners();
+        updateMetricsChartFromFilters();
+        updateBubbleChartFromFilters();
+        updateRadarChartFromFilters();
+        updateDoughnutChartFromFilters();
+        updateStackedBarChartFromFilters();
+    }, 200);
+
     function initializeDashboard() {
         try {
             console.log('Initializing dashboard...');
