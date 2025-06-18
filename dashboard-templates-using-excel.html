@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Templates Using Excel Files - Excel Dashboard Generator</title>
+    <meta name="description" content="Explore our popular dashboard templates for HR, Sales, Project Management, Finance, and Marketing - all powered by your Excel data.">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="styles/main.css" rel="stylesheet">
+    <link href="styles/theme.css" rel="stylesheet">
+    <style>
+        /* Navigation Styles */
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            background-color: var(--secondary-dark) !important;
+        }
+
+        .nav-link {
+            color: var(--text-secondary) !important;
+            font-weight: 500;
+            padding: 0.5rem 1rem !important;
+            margin: 0 0.2rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--text-primary) !important;
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        .nav-link.active {
+            color: var(--text-primary) !important;
+            background: linear-gradient(45deg, var(--accent-blue), #0a58ca);
+            box-shadow: 0 2px 8px rgba(13,110,253,0.3);
+        }
+
+        .navbar-brand {
+            font-weight: 600;
+            font-size: 1.3rem;
+        }
+
+        /* Blog Specific Styles */
+        .blog-header {
+            background: linear-gradient(45deg, var(--secondary-dark), var(--primary-dark));
+            padding: 4rem 0;
+            margin-bottom: 3rem;
+            border-radius: 0 0 2rem 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        .template-card {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .template-card::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, var(--accent-blue), transparent);
+            transition: all 0.3s ease;
+        }
+
+        .template-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .template-card:hover::after {
+            height: 6px;
+        }
+
+        .template-card h2 {
+            color: var(--accent-blue);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .template-preview {
+            background: rgba(0,0,0,0.2);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .template-metrics {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .metric-badge {
+            background: rgba(0,123,255,0.1);
+            color: var(--accent-blue);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .tips-section {
+            background: linear-gradient(135deg, var(--secondary-dark), var(--primary-dark));
+            padding: 2rem;
+            border-radius: 1rem;
+            margin: 3rem 0;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .tip-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .tip-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .cta-section {
+            background: linear-gradient(45deg, var(--accent-blue), #0a58ca);
+            padding: 3rem;
+            border-radius: 1rem;
+            margin: 3rem 0;
+            text-align: center;
+        }
+
+        .cta-button {
+            background: white;
+            color: var(--accent-blue) !important;
+            font-weight: 600;
+            padding: 1rem 2rem;
+            border-radius: 2rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255,255,255,0.3);
+        }
+    </style>
+</head>
+<body class="bg-dark text-light d-flex flex-column min-vh-100">
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-chart-bar me-2"></i>Excel Dashboard
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="upload.html">Upload</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="dashboard.html">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="privacy-policy.html">Privacy-Policy</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="terms-of-service.html">Terms of Service</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Blog Header -->
+    <header class="blog-header">
+        <div class="container">
+            <h1 class="display-4 text-center mb-4">Dashboard Templates You Can Build Using Excel Files</h1>
+            <p class="lead text-center mb-0">Start with pre-built templates designed for your industry needs</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <article class="blog-post">
+            <div class="introduction mb-5">
+                <p class="lead">
+                    Don't know where to start with dashboards? We've curated a list of templates our users love — all powered by Excel and built in SoftLabsMind.
+                </p>
+            </div>
+
+            <div class="templates">                <div class="template-card">
+                    <h2>
+                        <i class="fas fa-users"></i>
+                        HR Dashboard
+                    </h2>
+                    <p>Track headcount, hiring trends, and attrition rates. Perfect for HR leaders to monitor staffing health across departments.</p>
+                    <div class="template-preview">
+                        <h4 class="text-info mb-3">Key Features:</h4>
+                        <ul>
+                            <li>Real-time headcount tracking by department, location, and role</li>
+                            <li>Monthly hiring velocity and recruitment pipeline status</li>
+                            <li>Attrition analysis with breakdown by tenure and reasons</li>
+                            <li>Salary distribution and budget allocation insights</li>
+                            <li>Employee satisfaction scores and engagement metrics</li>
+                        </ul>
+                    </div>
+                    <div class="template-metrics">
+                        <span class="metric-badge"><i class="fas fa-user-plus me-1"></i>Headcount</span>
+                        <span class="metric-badge"><i class="fas fa-chart-line me-1"></i>Hiring Trends</span>
+                        <span class="metric-badge"><i class="fas fa-user-minus me-1"></i>Attrition Rate</span>
+                        <span class="metric-badge"><i class="fas fa-building me-1"></i>Department View</span>
+                        <span class="metric-badge"><i class="fas fa-heart me-1"></i>Engagement</span>
+                        <span class="metric-badge"><i class="fas fa-money-bill me-1"></i>Budget</span>
+                    </div>
+                </div>                <div class="template-card">
+                    <h2>
+                        <i class="fas fa-chart-pie"></i>
+                        Sales Performance Dashboard
+                    </h2>
+                    <p>Visualize monthly revenue, sales targets, conversion rates, and top-performing reps.</p>
+                    <div class="template-preview">
+                        <h4 class="text-info mb-3">Key Features:</h4>
+                        <ul>
+                            <li>Real-time revenue tracking with monthly, quarterly, and yearly comparisons</li>
+                            <li>Sales pipeline analysis with conversion rates at each stage</li>
+                            <li>Individual and team performance metrics with rankings</li>
+                            <li>Customer acquisition cost and lifetime value tracking</li>
+                            <li>Product-wise sales breakdown and trend analysis</li>
+                            <li>Regional performance heat maps and territory analysis</li>
+                        </ul>
+                    </div>
+                    <div class="template-metrics">
+                        <span class="metric-badge"><i class="fas fa-dollar-sign me-1"></i>Revenue</span>
+                        <span class="metric-badge"><i class="fas fa-bullseye me-1"></i>Targets</span>
+                        <span class="metric-badge"><i class="fas fa-chart-bar me-1"></i>Conversion</span>
+                        <span class="metric-badge"><i class="fas fa-trophy me-1"></i>Top Performers</span>
+                        <span class="metric-badge"><i class="fas fa-map me-1"></i>Territory</span>
+                        <span class="metric-badge"><i class="fas fa-box me-1"></i>Products</span>
+                    </div>
+                </div>                <div class="template-card">
+                    <h2>
+                        <i class="fas fa-tasks"></i>
+                        Project Management Dashboard
+                    </h2>
+                    <p>Keep your team aligned with task statuses, deadlines, and workload distribution.</p>
+                    <div class="template-preview">
+                        <h4 class="text-info mb-3">Key Features:</h4>
+                        <ul>
+                            <li>Project timeline visualization with milestone tracking</li>
+                            <li>Resource allocation and capacity planning tools</li>
+                            <li>Task dependencies and critical path highlighting</li>
+                            <li>Budget vs. actual cost monitoring</li>
+                            <li>Team productivity metrics and burndown charts</li>
+                            <li>Risk assessment and issue tracking interface</li>
+                        </ul>
+                    </div>
+                    <div class="template-metrics">
+                        <span class="metric-badge"><i class="fas fa-list-check me-1"></i>Task Status</span>
+                        <span class="metric-badge"><i class="fas fa-clock me-1"></i>Deadlines</span>
+                        <span class="metric-badge"><i class="fas fa-balance-scale me-1"></i>Workload</span>
+                        <span class="metric-badge"><i class="fas fa-users me-1"></i>Team View</span>
+                        <span class="metric-badge"><i class="fas fa-exclamation-triangle me-1"></i>Risks</span>
+                        <span class="metric-badge"><i class="fas fa-money-bill me-1"></i>Budget</span>
+                    </div>
+                </div>                <div class="template-card">
+                    <h2>
+                        <i class="fas fa-money-bill-trend-up"></i>
+                        Financial Overview Dashboard
+                    </h2>
+                    <p>Display revenue, expenses, profit, and cash flow trends — great for small businesses and startups.</p>
+                    <div class="template-preview">
+                        <h4 class="text-info mb-3">Key Features:</h4>
+                        <ul>
+                            <li>Comprehensive P&L statement with monthly/quarterly comparisons</li>
+                            <li>Cash flow forecasting with scenario analysis</li>
+                            <li>Expense categorization and budget variance tracking</li>
+                            <li>Accounts receivable and payable aging analysis</li>
+                            <li>Key financial ratios and performance indicators</li>
+                            <li>Working capital and runway calculations</li>
+                        </ul>
+                    </div>
+                    <div class="template-metrics">
+                        <span class="metric-badge"><i class="fas fa-arrow-trend-up me-1"></i>Revenue</span>
+                        <span class="metric-badge"><i class="fas fa-receipt me-1"></i>Expenses</span>
+                        <span class="metric-badge"><i class="fas fa-piggy-bank me-1"></i>Profit</span>
+                        <span class="metric-badge"><i class="fas fa-money-bill-wave me-1"></i>Cash Flow</span>
+                        <span class="metric-badge"><i class="fas fa-chart-line me-1"></i>Forecasting</span>
+                        <span class="metric-badge"><i class="fas fa-calculator me-1"></i>Ratios</span>
+                    </div>
+                </div>                <div class="template-card">
+                    <h2>
+                        <i class="fas fa-bullhorn"></i>
+                        Marketing Campaign Dashboard
+                    </h2>
+                    <p>Measure traffic, leads, ad spend, and ROI in a centralized, visual format.</p>
+                    <div class="template-preview">
+                        <h4 class="text-info mb-3">Key Features:</h4>
+                        <ul>
+                            <li>Multi-channel campaign performance tracking</li>
+                            <li>Lead generation and conversion funnel analysis</li>
+                            <li>Campaign ROI calculator with cost per acquisition</li>
+                            <li>Social media engagement and reach metrics</li>
+                            <li>Email campaign performance and A/B test results</li>
+                            <li>Content performance and SEO tracking</li>
+                        </ul>
+                    </div>
+                    <div class="template-metrics">
+                        <span class="metric-badge"><i class="fas fa-users me-1"></i>Traffic</span>
+                        <span class="metric-badge"><i class="fas fa-filter me-1"></i>Leads</span>
+                        <span class="metric-badge"><i class="fas fa-coins me-1"></i>Ad Spend</span>
+                        <span class="metric-badge"><i class="fas fa-chart-line me-1"></i>ROI</span>
+                        <span class="metric-badge"><i class="fas fa-share-alt me-1"></i>Social</span>
+                        <span class="metric-badge"><i class="fas fa-envelope me-1"></i>Email</span>
+                    </div>
+                </div>
+            </div>            <!-- Tips Section -->
+            <div class="tips-section">
+                <h2 class="mb-4"><i class="fas fa-lightbulb me-2"></i>Dashboard Design Tips</h2>
+                
+                <div class="tip-item">
+                    <div class="tip-icon">
+                        <i class="fas fa-heading text-white"></i>
+                    </div>
+                    <div>
+                        <h4>Use Clear Titles</h4>
+                        <p>Make your dashboard sections instantly recognizable with descriptive headings. Use action words and be specific about the metrics being displayed. For example, "Monthly Revenue Growth" is better than just "Revenue".</p>
+                    </div>
+                </div>
+
+                <div class="tip-item">
+                    <div class="tip-icon">
+                        <i class="fas fa-palette text-white"></i>
+                    </div>
+                    <div>
+                        <h4>Color-code KPIs</h4>
+                        <p>Use consistent colors to help viewers quickly identify different metrics and their status. Green for positive trends, red for alerts, and yellow for warnings. Keep your color scheme consistent across all visualizations for better comprehension.</p>
+                    </div>
+                </div>
+
+                <div class="tip-item">
+                    <div class="tip-icon">
+                        <i class="fas fa-broom text-white"></i>
+                    </div>
+                    <div>
+                        <h4>Keep it Clean</h4>
+                        <p>Don't overload your dashboard. Focus on the most important metrics for better clarity. Use white space effectively and group related metrics together. Consider using tabs or drill-downs for detailed views.</p>
+                    </div>
+                </div>
+
+                <div class="tip-item">
+                    <div class="tip-icon">
+                        <i class="fas fa-mobile-alt text-white"></i>
+                    </div>
+                    <div>
+                        <h4>Mobile-First Design</h4>
+                        <p>Ensure your dashboard is responsive and works well on all devices. Prioritize the most important metrics for mobile view and consider using stacked layouts for smaller screens.</p>
+                    </div>
+                </div>
+
+                <div class="tip-item">
+                    <div class="tip-icon">
+                        <i class="fas fa-clock text-white"></i>
+                    </div>
+                    <div>
+                        <h4>Time Period Controls</h4>
+                        <p>Include easy-to-use date range selectors and comparison periods. Allow users to switch between different time frames (daily, weekly, monthly, yearly) for better trend analysis.</p>
+                    </div>
+                </div>
+
+                <div class="tip-item">
+                    <div class="tip-icon">
+                        <i class="fas fa-download text-white"></i>
+                    </div>
+                    <div>
+                        <h4>Export Options</h4>
+                        <p>Provide options to export data and visualizations in various formats (PDF, Excel, PNG). Include print-friendly layouts for better reporting capabilities.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Call to Action -->
+            <div class="cta-section">
+                <h2 class="text-white mb-4">Ready to Start with a Template?</h2>
+                <p class="text-white mb-4">Choose from our pre-built templates and customize them with your data.</p>
+                <a href="upload.html" class="btn btn-primary btn-lg">
+                    <i class="fas fa-th-large me-2"></i>Explore Free Templates
+                </a>
+            </div>
+        </article>
+    </div>
+
+       <!-- Footer -->
+        <footer class="py-3 mt-auto bg-dark border-top border-secondary">
+        <div class="container text-center">
+            <small class="text-muted">&copy; 2025 SoftLabsMind. All rights reserved.</small>
+        </div>
+ 
+    </footer> 
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Active page highlight script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle file:/// protocol and normal paths
+            let currentPage = window.location.href;
+            currentPage = decodeURIComponent(currentPage);
+            currentPage = currentPage.split('\\').pop().split('/').pop() || 'index.html';
+            
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === currentPage) {
+                    link.classList.add('active');
+                    link.setAttribute('aria-current', 'page');
+                }
+            });
+
+            // Load footer
+            fetch('components/footer.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('footer').innerHTML = data;
+                })
+                .catch(error => {
+                    console.log('Error loading footer:', error);
+                });
+
+            // Add hover effects to template cards
+            document.querySelectorAll('.template-card').forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    card.style.transform = 'translateY(-5px)';
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

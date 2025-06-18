@@ -22,6 +22,33 @@
       <!-- Custom CSS -->
     <link href="css/styles.css" rel="stylesheet">
     <style>
+        /* Gradient Text Effect */
+        .text-gradient {
+            background: linear-gradient(45deg, #0d6efd, #0dcaf0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-card {
+            background: linear-gradient(145deg, #1a1e21, #212529);
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .hero-btn {
+            background: linear-gradient(45deg, #0d6efd, #0dcaf0);
+            border: none;
+            transition: all 0.3s ease;
+        }
+        
+        .hero-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(13, 110, 253, 0.4);
+        }
+
+        /* Existing styles */
         body {
             background-color: #212529;
             color: #f8f9fa;
@@ -125,11 +152,126 @@
             font-weight: 600;
             font-size: 1.3rem;
         }
+
+        /* 3D Animation Containers */
+        .spline-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            border-radius: 15px;
+            overflow: hidden;
+            background: linear-gradient(145deg, #1a1e21, #212529);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .spline-container:hover {
+            transform: translateY(-5px);
+        }
+
+        .animation-row {
+            margin-top: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .animation-card {
+            background: linear-gradient(145deg, #1a1e21, #212529);
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .animation-title {
+            color: #fff;
+            font-size: 1.25rem;
+            margin: 1rem 0;
+            text-align: center;
+            background: linear-gradient(45deg, #0d6efd, #0dcaf0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Feature Card Animations */
+        .feature-animation-card {
+            background: linear-gradient(145deg, #1a1e21, #212529);
+            border-radius: 15px;
+            border: none;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            height: 100%;
+        }
+
+        .feature-animation-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(13, 110, 253, 0.2);
+        }
+
+        .feature-icon-container {
+            width: 100%;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(45deg, rgba(13, 110, 253, 0.1), rgba(13, 202, 240, 0.1));
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-icon {
+            font-size: 4rem;
+            color: #0d6efd;
+            transition: all 0.3s ease;
+        }
+
+        .feature-animation-card:hover .feature-icon {
+            transform: scale(1.2);
+            color: #0dcaf0;
+        }
+
+        .feature-icon-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+
+        .feature-animation-card:hover .feature-icon-bg {
+            transform: scale(1.1);
+            opacity: 0.9;
+        }
+
+        .feature-title {
+            color: #fff;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            text-align: center;
+            background: linear-gradient(45deg, #0d6efd, #0dcaf0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .feature-description {
+            color: #adb5bd;
+            text-align: center;
+            padding: 0 1.5rem 1.5rem;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
     </style>
   
     <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_PUBLISHER_ID"
      crossorigin="anonymous"></script>
+    <!-- Spline 3D Viewer -->
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@0.9.430/build/spline-viewer.js"></script>
 </head>
 <body class="bg-dark text-light d-flex flex-column min-vh-100">    <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
@@ -166,16 +308,33 @@
                 </ul>
             </div>
         </div>
-    </nav>
-
-    <!-- Hero Section -->
+    </nav>    <!-- Hero Section -->
     <section class="hero-section text-center">
         <div class="container">
-            <h1 class="display-4 mb-4">Excel Dashboard Generator</h1>
-            <p class="lead mb-4">Transform your Excel data into interactive dashboards with just a few clicks.</p>
-            <a href="upload.html" class="btn btn-primary btn-lg">Get Started</a>
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="card hero-card">
+                        <div class="card-body p-5">
+                            <h1 class="display-4 text-center mb-4 text-gradient">
+                                Transform Your Excel Files into Stunning Dashboards Instantly
+                            </h1>
+                            <p class="lead text-light text-center mb-4">
+                                Welcome to SoftLabsMind, your go-to platform for turning static Excel data into interactive, 
+                                professional dashboards — all without any coding. Whether you're a business owner, project 
+                                manager, analyst, or educator, our tool empowers you to visualize your data in seconds and 
+                                make smarter decisions, faster.
+                            </p>
+                            <div class="text-center">
+                                <a href="upload.html" class="btn btn-primary btn-lg px-5 py-3 hero-btn">
+                                    <i class="fas fa-chart-line me-2"></i>Start Creating Your Dashboard
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </section>    <!-- Top Advertisement Space -->
+    </section><!-- Top Advertisement Space -->
     <div class="container">
         <div class="ad-space ad-space-horizontal">
             <!-- Ad Content Here -->
@@ -217,6 +376,59 @@
                     </div>
                 </div>
   
+            </div>
+        </div>
+    </section>    <!-- Features Animation Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row g-4">
+                <!-- Interactive Charts -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-animation-card">
+                        <div class="feature-icon-container">
+                            <i class="fas fa-chart-line feature-icon"></i>
+                            <div class="feature-icon-bg" style="background-image: url('https://cdn.pixabay.com/photo/2017/10/22/09/02/graph-2877219_1280.jpg');"></div>
+                        </div>
+                        <h3 class="feature-title">Interactive Charts & Graphs</h3>
+                        <p class="feature-description">Create dynamic, interactive visualizations that bring your data to life</p>
+                    </div>
+                </div>
+
+                <!-- Real-time Visualization -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-animation-card">
+                        <div class="feature-icon-container">
+                            <i class="fas fa-chart-bar feature-icon"></i>
+                            <div class="feature-icon-bg" style="background-image: url('https://cdn.pixabay.com/photo/2017/10/22/09/02/charts-2877220_1280.jpg');"></div>
+                        </div>
+                        <h3 class="feature-title">Real-time Data Visualization</h3>
+                        <p class="feature-description">Watch your data transform into insights in real-time</p>
+                    </div>
+                </div>
+
+                <!-- Excel Integration -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-animation-card">
+                        <div class="feature-icon-container">
+                            <i class="fas fa-file-excel feature-icon"></i>
+                            <div class="feature-icon-bg" style="background-image: url('https://cdn.pixabay.com/photo/2017/10/22/09/02/excel-2877215_1280.jpg');"></div>
+                        </div>
+                        <h3 class="feature-title">Excel Integration</h3>
+                        <p class="feature-description">Seamlessly import and transform your Excel data</p>
+                    </div>
+                </div>
+
+                <!-- Advanced Analytics -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-animation-card">
+                        <div class="feature-icon-container">
+                            <i class="fas fa-analytics feature-icon"></i>
+                            <div class="feature-icon-bg" style="background-image: url('https://cdn.pixabay.com/photo/2017/10/22/09/02/analysis-2877213_1280.jpg');"></div>
+                        </div>
+                        <h3 class="feature-title">Advanced Analytics</h3>
+                        <p class="feature-description">Unlock powerful insights with advanced analytics tools</p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -308,12 +520,182 @@
             </div>
         </div>
     </section>
+    <!-- Blog Section -->
+    <section class="py-5 blog-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-10 mx-auto">
+                    <div class="card bg-dark text-light p-4">
+                        <h2 class="text-center mb-4">
+                            <i class="fas fa-blog me-2 text-gradient"></i>
+                            Latest from SoftLabsMind Blog
+                        </h2>
+                        
+                        <div class="row g-4">
+                            <!-- Blog Card 1 -->
+                            <div class="col-md-6">
+                                <div class="blog-card card h-100 bg-gradient border-0">
+                                    <div class="card-body">
+                                        <div class="blog-icon mb-3">
+                                            <i class="fas fa-chart-line fa-2x text-primary"></i>
+                                        </div>
+                                        <h3 class="h5 mb-3">
+                                            <a href="top-5-reasons-excel-dashboard.html" class="text-light text-decoration-none hover-primary">
+                                                Top 5 Reasons to Turn Excel into Dashboards
+                                            </a>
+                                        </h3>
+                                        <p class="text-muted mb-0">
+                                            Discover why converting your Excel files into interactive dashboards can transform your business insights.
+                                        </p>
+                                    </div>
+                                    <div class="card-footer bg-transparent border-top border-secondary">
+                                        <a href="top-5-reasons-excel-dashboard.html" class="btn btn-outline-primary btn-sm">
+                                            Read More <i class="fas fa-arrow-right ms-1"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
 
+                            <!-- Blog Card 2 -->
+                            <div class="col-md-6">
+                                <div class="blog-card card h-100 bg-gradient border-0">
+                                    <div class="card-body">
+                                        <div class="blog-icon mb-3">
+                                            <i class="fas fa-clock fa-2x text-primary"></i>
+                                        </div>
+                                        <h3 class="h5 mb-3">
+                                            <a href="create-live-dashboard-from-excel.html" class="text-light text-decoration-none hover-primary">
+                                                Create a Live Dashboard in Just 2 Minutes
+                                            </a>
+                                        </h3>
+                                        <p class="text-muted mb-0">
+                                            Learn how to quickly transform your Excel data into professional, interactive dashboards.
+                                        </p>
+                                    </div>
+                                    <div class="card-footer bg-transparent border-top border-secondary">
+                                        <a href="create-live-dashboard-from-excel.html" class="btn btn-outline-primary btn-sm">
+                                            Read More <i class="fas fa-arrow-right ms-1"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Blog Card 3 -->
+                            <div class="col-md-6">
+                                <div class="blog-card card h-100 bg-gradient border-0">
+                                    <div class="card-body">
+                                        <div class="blog-icon mb-3">
+                                            <i class="fas fa-th-large fa-2x text-primary"></i>
+                                        </div>
+                                        <h3 class="h5 mb-3">
+                                            <a href="dashboard-templates-using-excel.html" class="text-light text-decoration-none hover-primary">
+                                                Dashboard Templates for Excel
+                                            </a>
+                                        </h3>
+                                        <p class="text-muted mb-0">
+                                            Explore our collection of pre-built dashboard templates ready for your Excel data.
+                                        </p>
+                                    </div>
+                                    <div class="card-footer bg-transparent border-top border-secondary">
+                                        <a href="dashboard-templates-using-excel.html" class="btn btn-outline-primary btn-sm">
+                                            Read More <i class="fas fa-arrow-right ms-1"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Blog Card 4 -->
+                            <div class="col-md-6">
+                                <div class="blog-card card h-100 bg-gradient border-0">
+                                    <div class="card-body">
+                                        <div class="blog-icon mb-3">
+                                            <i class="fas fa-business-time fa-2x text-primary"></i>
+                                        </div>
+                                        <h3 class="h5 mb-3">
+                                            <a href="real-time-dashboards-for-small-business.html" class="text-light text-decoration-none hover-primary">
+                                                Real-Time Dashboards for Small Business
+                                            </a>
+                                        </h3>
+                                        <p class="text-muted mb-0">
+                                            Why real-time dashboards are essential for modern small businesses success.
+                                        </p>
+                                    </div>
+                                    <div class="card-footer bg-transparent border-top border-secondary">
+                                        <a href="real-time-dashboards-for-small-business.html" class="btn btn-outline-primary btn-sm">
+                                            Read More <i class="fas fa-arrow-right ms-1"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <style>
+        .blog-section .card {
+            background: linear-gradient(145deg, #1a1e21, #212529);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .blog-section .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(13, 110, 253, 0.2);
+        }
+
+        .blog-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(13, 110, 253, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .blog-card:hover .blog-icon {
+            background: rgba(13, 110, 253, 0.2);
+            transform: scale(1.1);
+        }
+
+        .hover-primary:hover {
+            color: #0d6efd !important;
+        }
+
+        .text-gradient {
+            background: linear-gradient(45deg, #0d6efd, #0dcaf0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .bg-gradient {
+            background: linear-gradient(145deg, #1a1e21, #212529);
+        }
+
+        .btn-outline-primary {
+            color: #0d6efd;
+            border-color: #0d6efd;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-primary:hover {
+            background: linear-gradient(45deg, #0d6efd, #0dcaf0);
+            border-color: transparent;
+            transform: translateX(5px);
+        }
+    </style>
     <!-- Footer -->
     <footer class="py-3 mt-auto bg-dark border-top border-secondary">
         <div class="container text-center">
             <small class="text-muted">&copy; 2025 SoftLabsMind. All rights reserved.</small>
         </div>
+ 
     </footer>    <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>    <!-- Active page highlight script -->
     <script>
@@ -331,6 +713,7 @@
                 }
             });
         });
+        
     </script>
 	<script src="https://my.hellobar.com/e363261bdb40a7c87fe87992162e09068796e355.js" type="text/javascript" charset="utf-8" async="async"> </script>
 </body>

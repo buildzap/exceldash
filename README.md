@@ -1,6 +1,6 @@
 # Excel Dashboard Generator
 
-A modern, client-side web application for creating interactive dashboards from Excel files. Built with HTML5, Bootstrap 5, and Vanilla JavaScript...
+A modern, client-side web application for creating interactive dashboards from Excel files. Built with HTML5, Bootstrap 5, and Vanilla JavaScript.
 
 ## Features
 
@@ -62,7 +62,7 @@ All dependencies are loaded via CDN for simplicity.
 
 ## License
 
-MIT License - feel free to use this project for any purpose...
+MIT License - feel free to use this project for any purpose.
 
 ## Contributing
 

@@ -46,25 +46,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Function to destroy all existing charts
     function destroyCharts() {
         Object.values(charts).forEach(chart => {
-            if (chart) {
-                try {
-                    chart.destroy();
-                } catch (error) {
-                    console.warn('Error destroying chart:', error);
-                }
-            }
+            if (chart) chart.destroy();
         });
         charts = {};
-        
-        // Clear all canvas contexts
-        ['mainChart', 'pieChart', 'trendChart', 'comparisonChart', 'metricsChart', 
-         'bubbleChart', 'radarChart', 'doughnutChart', 'stackedBarChart'].forEach(id => {
-            const canvas = document.getElementById(id);
-            if (canvas) {
-                const ctx = canvas.getContext('2d');
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-            }
-        });
     }
 
     // Function to create or update a single chart
@@ -115,18 +99,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
             console.log('Updating charts with:', { xAxisIndex, yAxisIndex, chartType, aggregation });
 
-            // Get unique values and sort data
-            const uniqueCategories = [...new Set(filteredData.map(row => row[0]))].sort();
-            const uniqueDates = [...new Set(filteredData.map(row => row[2]))].sort();
-            const uniqueProducts = [...new Set(filteredData.map(row => row[1]))].sort();
-
-            // Color generator
+            // Get unique categories and generate colors
+            const categories = [...new Set(filteredData.map(row => row[0]))];
             const getColor = (index, alpha = 0.5) => 
-                `hsla(${(360 / uniqueCategories.length) * index}, 70%, 50%, ${alpha})`;
+                `hsla(${(360 / categories.length) * index}, 70%, 50%, ${alpha})`;
 
             // Helper functions
             const aggregate = (data, method) => {
-                if (!data || data.length === 0) return 0;
                 switch (method) {
                     case 'average':
                         return data.reduce((a, b) => a + b, 0) / data.length;
@@ -148,18 +127,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 }, {});
             };
 
-            // Update charts
-            // 1. Main Chart
+            // 1. Main Chart (Uses control panel settings)
             const mainChartData = getAggregatedData(yAxisIndex);
             createChart('mainChart', {
                 type: chartType,
                 data: {
-                    labels: uniqueCategories,
+                    labels: categories,
                     datasets: [{
                         label: `${headers[yAxisIndex]} by ${headers[xAxisIndex]}`,
-                        data: uniqueCategories.map(cat => aggregate(mainChartData[cat], aggregation)),
-                        backgroundColor: uniqueCategories.map((_, i) => getColor(i)),
-                        borderColor: uniqueCategories.map((_, i) => getColor(i, 1)),
+                        data: categories.map(cat => aggregate(mainChartData[cat], aggregation)),
+                        backgroundColor: categories.map((_, i) => getColor(i)),
+                        borderColor: categories.map((_, i) => getColor(i, 1)),
                         borderWidth: 1
                     }]
                 },
@@ -178,189 +156,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
 
-            // 2. Distribution (Pie Chart)
-            const distributionData = getAggregatedData(5); // Revenue by default
-            createChart('pieChart', {
-                type: 'pie',
-                data: {
-                    labels: uniqueCategories,
-                    datasets: [{
-                        data: uniqueCategories.map(cat => aggregate(distributionData[cat], 'sum')),
-                        backgroundColor: uniqueCategories.map((_, i) => getColor(i)),
-                        borderColor: uniqueCategories.map((_, i) => getColor(i, 1)),
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Revenue Distribution by Category'
-                        },
-                        legend: {
-                            position: 'right'
-                        }
-                    },
-                    responsive: true,
-                    maintainAspectRatio: false
-                }
-            });
-
-            // 3. Trend Analysis (Line Chart)
-            const dateData = uniqueDates.map(date => {
-                const dateRecords = filteredData.filter(row => row[2] === date);
-                return {
-                    date,
-                    revenue: aggregate(dateRecords.map(row => parseNumericValue(row[5])), 'sum'),
-                    sales: aggregate(dateRecords.map(row => parseNumericValue(row[3])), 'sum')
-                };
-            });
-
-            createChart('trendChart', {
-                type: 'line',
-                data: {
-                    labels: uniqueDates,
-                    datasets: [
-                        {
-                            label: 'Revenue',
-                            data: dateData.map(d => d.revenue),
-                            borderColor: getColor(0, 1),
-                            backgroundColor: getColor(0, 0.1),
-                            fill: true,
-                            tension: 0.4
-                        },
-                        {
-                            label: 'Sales',
-                            data: dateData.map(d => d.sales),
-                            borderColor: getColor(1, 1),
-                            backgroundColor: getColor(1, 0.1),
-                            fill: true,
-                            tension: 0.4
-                        }
-                    ]
-                },
-                options: {
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Revenue and Sales Trend'
-                        }
-                    },
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Date'
-                            }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Value'
-                            }
-                        }
-                    }
-                }
-            });
-
-            // 4. Category Comparison
-            const compareData = uniqueCategories.map(category => {
-                const categoryRecords = filteredData.filter(row => row[0] === category);
-                return {
-                    category,
-                    sales: aggregate(categoryRecords.map(row => parseNumericValue(row[3])), 'sum'),
-                    units: aggregate(categoryRecords.map(row => parseNumericValue(row[4])), 'sum'),
-                    revenue: aggregate(categoryRecords.map(row => parseNumericValue(row[5])), 'sum')
-                };
-            });
-
-            createChart('comparisonChart', {
-                type: 'bar',
-                data: {
-                    labels: uniqueCategories,
-                    datasets: [
-                        {
-                            label: 'Sales',
-                            data: compareData.map(d => d.sales),
-                            backgroundColor: getColor(0, 0.6),
-                            borderColor: getColor(0, 1),
-                            borderWidth: 1
-                        },
-                        {
-                            label: 'Units',
-                            data: compareData.map(d => d.units),
-                            backgroundColor: getColor(1, 0.6),
-                            borderColor: getColor(1, 1),
-                            borderWidth: 1
-                        }
-                    ]
-                },
-                options: {
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Category Performance Comparison'
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Value'
-                            }
-                        }
-                    }
-                }
-            });
-
-            // 5. Performance Metrics
-            createChart('metricsChart', {
-                type: 'radar',
-                data: {
-                    labels: uniqueCategories,
-                    datasets: [
-                        {
-                            label: 'Revenue',
-                            data: compareData.map(d => d.revenue),
-                            backgroundColor: getColor(0, 0.2),
-                            borderColor: getColor(0, 1),
-                            borderWidth: 2
-                        },
-                        {
-                            label: 'Sales',
-                            data: compareData.map(d => d.sales),
-                            backgroundColor: getColor(1, 0.2),
-                            borderColor: getColor(1, 1),
-                            borderWidth: 2
-                        },
-                        {
-                            label: 'Units',
-                            data: compareData.map(d => d.units),
-                            backgroundColor: getColor(2, 0.2),
-                            borderColor: getColor(2, 1),
-                            borderWidth: 2
-                        }
-                    ]
-                },
-                options: {
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Category Performance Metrics'
-                        }
-                    },
-                    scales: {
-                        r: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-
-            // Continue with the rest of the chart updates
-            // 6. Sales-Units-Revenue Analysis (Bubble)
+            // 2. Sales-Units-Revenue Analysis (Bubble)
             const bubbleData = filteredData.map(row => ({
                 x: parseNumericValue(row[3]), // Sales
                 y: parseNumericValue(row[4]), // Units
@@ -371,7 +167,7 @@ document.addEventListener('DOMContentLoaded', function() {
             createChart('bubbleChart', {
                 type: 'bubble',
                 data: {
-                    datasets: uniqueCategories.map((category, index) => ({
+                    datasets: categories.map((category, index) => ({
                         label: category,
                         data: bubbleData.filter(item => item.category === category),
                         backgroundColor: getColor(index, 0.6),
@@ -402,9 +198,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
 
-            // 7. Category Performance Radar
+            // 3. Category Performance Radar
             const metrics = ['Sales', 'Units', 'Revenue'];
-            const metricsData = uniqueCategories.reduce((acc, category) => {
+            const metricsData = categories.reduce((acc, category) => {
                 const categoryData = filteredData.filter(row => row[0] === category);
                 acc[category] = {
                     Sales: aggregate(categoryData.map(row => parseNumericValue(row[3])), 'sum'),
@@ -417,10 +213,10 @@ document.addEventListener('DOMContentLoaded', function() {
             createChart('radarChart', {
                 type: 'radar',
                 data: {
-                    labels: uniqueCategories,
+                    labels: categories,
                     datasets: metrics.map((metric, index) => ({
                         label: metric,
-                        data: uniqueCategories.map(cat => metricsData[cat][metric]),
+                        data: categories.map(cat => metricsData[cat][metric]),
                         backgroundColor: getColor(index, 0.2),
                         borderColor: getColor(index, 1),
                         borderWidth: 2
@@ -436,16 +232,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
 
-            // 8. Revenue Distribution (Doughnut)
+            // 4. Revenue Distribution (Doughnut)
             const revenueData = getAggregatedData(5);
             createChart('doughnutChart', {
                 type: 'doughnut',
                 data: {
-                    labels: uniqueCategories,
+                    labels: categories,
                     datasets: [{
-                        data: uniqueCategories.map(cat => aggregate(revenueData[cat], 'sum')),
-                        backgroundColor: uniqueCategories.map((_, i) => getColor(i)),
-                        borderColor: uniqueCategories.map((_, i) => getColor(i, 1)),
+                        data: categories.map(cat => aggregate(revenueData[cat], 'sum')),
+                        backgroundColor: categories.map((_, i) => getColor(i)),
+                        borderColor: categories.map((_, i) => getColor(i, 1)),
                         borderWidth: 1
                     }]
                 },
@@ -459,7 +255,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
 
-            // 9. Product Category Analysis (Stacked Bar)
+            // 5. Product Category Analysis (Stacked Bar)
             const products = [...new Set(filteredData.map(row => row[1]))];
             const productData = {};
             
@@ -481,7 +277,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 type: 'bar',
                 data: {
                     labels: products,
-                    datasets: uniqueCategories.map((category, index) => ({
+                    datasets: categories.map((category, index) => ({
                         label: category,
                         data: products.map(product => productData[product]?.[category] || 0),
                         backgroundColor: getColor(index),
@@ -575,21 +371,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to handle control panel changes
     function handleControlChange() {
-    console.log('Handling control panel changes...');
-    try {
-        // Destroy existing charts first
-        destroyCharts();
-        
-        // Get all control values
-        const filters = {
-            chartType: document.getElementById('chartType')?.value || 'bar',
-            xAxis: parseInt(document.getElementById('xAxis')?.value || '0'),
-            yAxis: parseInt(document.getElementById('yAxis')?.value || '3'),
-            aggregation: document.getElementById('aggregation')?.value || 'sum',
-            category: document.getElementById('categoryFilter')?.value,
-            date: document.getElementById('dateFilter')?.value,
-            status: document.getElementById('statusFilter')?.value
-        };
+        console.log('Handling control panel changes...');
+        try {
+            // Get all control values
+            const filters = {
+                chartType: document.getElementById('chartType')?.value || 'bar',
+                xAxis: parseInt(document.getElementById('xAxis')?.value || '0'),
+                yAxis: parseInt(document.getElementById('yAxis')?.value || '3'),
+                aggregation: document.getElementById('aggregation')?.value || 'sum',
+                category: document.getElementById('categoryFilter')?.value,
+                date: document.getElementById('dateFilter')?.value,
+                status: document.getElementById('statusFilter')?.value
+            };
 
             console.log('Applied filters:', filters);
 
@@ -627,23 +420,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
 
-            // Apply status filter if applicable and status column exists
-            if (filters.status && filters.status !== 'all' && data[0].length > 6) {
+            // Apply status filter if applicable
+            if (filters.status && filters.status !== 'all') {
                 filteredData = filteredData.filter(row => {
-                    const status = row[row.length - 1];
+                    const status = row[row.length - 1]; // Assuming status is the last column
                     return status === filters.status;
                 });
             }
 
             // Reset page to 1 when filters change
-            currentPage = 1;        // Update visualizations with new filtered data
-        updateTable();
-        
-        // Update charts with a small delay to ensure DOM is ready
-        setTimeout(() => {
-            destroyCharts(); // Ensure all charts are properly cleaned up
+            currentPage = 1;
+
+            // Update visualizations with new filtered data
+            updateTable();
             updateCharts();
-        }, 100);
 
             console.log(`Data filtered: ${filteredData.length} records remaining`);
         } catch (error) {
@@ -744,9 +534,6 @@ document.addEventListener('DOMContentLoaded', function() {
     function initializeDashboard() {
         try {
             console.log('Initializing dashboard...');
-            // Clear any existing charts first
-            destroyCharts();
-            
             const storedData = localStorage.getItem('excelData');
 
             // Load data
