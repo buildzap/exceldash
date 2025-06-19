@@ -555,6 +555,10 @@
                         <div class="card shadow-sm h-100">
                             <div class="card-header bg-blue py-2 d-flex justify-content-start">
                                 <h6 class="card-title mb-0">Distribution</h6>
+                                <div class="d-flex gap-2 ms-3">
+                                    <select class="form-select form-select-sm" id="distributionXAxisFilter" style="width: 120px;"></select>
+                                    <select class="form-select form-select-sm" id="distributionYAxisFilter" style="width: 120px;"></select>
+                                </div>
                             </div>
                             <div class="card-body">
                                 <canvas id="pieChart" height="250"></canvas>
@@ -675,7 +679,7 @@
 
                 <!-- Data Table Section -->
                 <div class="card shadow-sm">
-                    <div class="card-header bg-white d-flex justify-content-between align-items-center py-2">
+                    <div class="card-header bg-blue d-flex justify-content-between align-items-center py-2">
                         <h6 class="card-title mb-0">Data Table</h6>
                         <div class="d-flex gap-2">
                             <div class="input-group input-group-sm" style="width: 250px;">

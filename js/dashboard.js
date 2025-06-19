@@ -179,7 +179,8 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             // 2. Distribution (Pie Chart)
-            const distributionData = getAggregatedData(5); // Revenue by default
+            console.log('PieChart uniqueCategories:', uniqueCategories);
+            console.log('PieChart distributionData:', distributionData);
             createChart('pieChart', {
                 type: 'pie',
                 data: {
@@ -1410,6 +1411,80 @@ document.addEventListener('DOMContentLoaded', function() {
         updateStackedBarChartFromFilters();
     }, 200);
 
+    // === Distribution (Pie Chart) with X & Y Filters (like Trend Analysis) ===
+    function populateDistributionAxisFilters() {
+        const xFilter = document.getElementById('distributionXAxisFilter');
+        const yFilter = document.getElementById('distributionYAxisFilter');
+        if (!xFilter || !yFilter || !headers || headers.length === 0) return;
+        xFilter.innerHTML = '';
+        yFilter.innerHTML = '';
+        headers.forEach((header, idx) => {
+            const xOption = document.createElement('option');
+            xOption.value = idx;
+            xOption.text = header;
+            xFilter.appendChild(xOption);
+        });
+        headers.forEach((header, idx) => {
+            if (idx > 2) {
+                const yOption = document.createElement('option');
+                yOption.value = idx;
+                yOption.text = header;
+                yFilter.appendChild(yOption);
+            }
+        });
+        xFilter.value = 0; // Default X: Category
+        yFilter.value = 5; // Default Y: Revenue
+    }
+
+    document.getElementById('distributionXAxisFilter')?.addEventListener('change', updateDistributionChartFromFilters);
+    document.getElementById('distributionYAxisFilter')?.addEventListener('change', updateDistributionChartFromFilters);
+
+    function updateDistributionChartFromFilters() {
+        const xFilter = document.getElementById('distributionXAxisFilter');
+        const yFilter = document.getElementById('distributionYAxisFilter');
+        if (!xFilter || !yFilter) return;
+        const xIndex = parseInt(xFilter.value);
+        const yIndex = parseInt(yFilter.value);
+        const xValues = [...new Set(filteredData.map(row => row[xIndex]))].sort();
+        const chartData = xValues.map(xVal => {
+            const rows = filteredData.filter(row => row[xIndex] === xVal);
+            return {
+                x: xVal,
+                y: rows.reduce((sum, row) => sum + parseNumericValue(row[yIndex]), 0)
+            };
+        });
+        createChart('pieChart', {
+            type: 'pie',
+            data: {
+                labels: chartData.map(d => d.x),
+                datasets: [{
+                    data: chartData.map(d => d.y),
+                    backgroundColor: chartData.map((_, i) => `hsla(${(360 / chartData.length) * i}, 70%, 50%, 0.6)`),
+                    borderColor: chartData.map((_, i) => `hsla(${(360 / chartData.length) * i}, 70%, 50%, 1)`),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                plugins: {
+                    title: {
+                        display: true,
+                        text: `${headers[yIndex]} Distribution by ${headers[xIndex]}`
+                    },
+                    legend: { position: 'right' }
+                },
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+    }
+
+    // Call after data is loaded
+    setTimeout(() => {
+        populateDistributionAxisFilters();
+        updateDistributionChartFromFilters();
+    }, 250);
+
+    // === Dashboard Initialization ===
     function initializeDashboard() {
         try {
             console.log('Initializing dashboard...');
